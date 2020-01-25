@@ -62,6 +62,10 @@ namespace Sakkun.DOTS
             {
                 Value = entity
             });
+            manager.SetComponentData(prefab, new Collider
+            {
+                Radius = 10f
+            });
 
             var rand = new Unity.Mathematics.Random(1);
             using(var entities = new NativeArray<Entity>(_initialCrew, Allocator.Temp))

@@ -9,6 +9,7 @@ using static Unity.Mathematics.math;
 
 namespace Sakkun.DOTS
 {
+
     [UpdateInGroup(typeof(CollisionSystemGroup))]
     public class CollisionSystem : JobComponentSystem
     {
@@ -17,34 +18,8 @@ namespace Sakkun.DOTS
 
         private EntityQuery _query;
 
-        // [BurstCompile]
-        // private struct CollisionJob : IJobParallelFor
-        // {
-        //     [DeallocateOnJobCompletion, ReadOnly] public NativeArray<Translation> Translations;
-        //     [DeallocateOnJobCompletion, ReadOnly] public NativeArray<Collider> Colliders;
-        //     [WriteOnly] public NativeMultiHashMap<int, int>.ParallelWriter CollisionMap;
-
-        //     public void Execute(int index)
-        //     {
-        //         var mine = Translations[index].Value;
-        //         var myRad = Colliders[index].Radius;
-        //         var len = Translations.Length;
-        //         for(int i = 0; i < len; i++)
-        //         {
-        //             var target = Translations[i].Value;
-        //             var tarRad = Colliders[i].Radius;
-
-        //             if ( distance(mine, target) < myRad + tarRad)
-        //             {
-        //                 CollisionMap.Add(index, i);
-        //             }
-        //         }
-        //     }
-        // }
-
-
         [BurstCompile]
-        private struct CollisionJob : IJobForEachWithEntity<Translation, Collider>
+        private struct CollisionJob : IJobForEachWithEntity<Translation, Collider>// 依存関係を自動検知させるためにForEachを利用する
         {
             [DeallocateOnJobCompletion, ReadOnly] public NativeArray<Translation> Translations;
             [DeallocateOnJobCompletion, ReadOnly] public NativeArray<Collider> Colliders;
@@ -79,7 +54,7 @@ namespace Sakkun.DOTS
             var colliders = _query.ToComponentDataArray<Collider>(Allocator.TempJob);
 
             CollidableArray = _query.ToEntityArray(Allocator.TempJob);
-            CollisionMap = new NativeMultiHashMap<int, int>(translations.Length, Allocator.TempJob);
+            CollisionMap = new NativeMultiHashMap<int, int>(translations.Length*translations.Length, Allocator.TempJob);
 
             return new CollisionJob
             {
@@ -108,7 +83,7 @@ namespace Sakkun.DOTS
         }
     }
 
-#if DEBUG
+#if DEBUG_
     [UpdateInGroup(typeof(CollisionSystemGroup))]
     [UpdateAfter(typeof(CollisionSystem))]
     public class TestCollision : JobComponentSystem

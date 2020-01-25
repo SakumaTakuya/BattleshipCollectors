@@ -7,9 +7,10 @@ using UnityEngine;
 
 namespace Sakkun.DOTS
 {
-    public struct CameraSpeed : IComponentData
+    public struct TpsCamera : IComponentData
     {
-        public float Value;
+        public float Speed;
+        public float3 Offset;
     }
 
 }

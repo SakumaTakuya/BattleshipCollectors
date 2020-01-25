@@ -20,9 +20,12 @@ namespace Sakkun.DOTS
         protected override void OnCreate()
         {
             _cameraQuery = GetEntityQuery(
-                typeof(CameraTransform),
-                typeof(LocalPosition),
-                typeof(CameraSpeed));
+                typeof(Translation),
+                typeof(Rotation),
+                typeof(TpsCamera));
+                // typeof(CameraTransform),
+                // typeof(LocalPosition),
+                // typeof(CameraSpeed));
             _playerQuery = GetEntityQuery(
                 typeof(Player), 
                 typeof(Translation),
@@ -31,25 +34,31 @@ namespace Sakkun.DOTS
 
         protected override void OnUpdate()
         {
+            // var 
             Entities.With(_cameraQuery)
-                    .ForEach<CameraTransform, LocalPosition, CameraSpeed>(FollowPlayer);
+                    .ForEach<Translation, Rotation, TpsCamera>(FollowPlayer);
+            
         }
 
 
-        private void FollowPlayer(CameraTransform cameraTransform, ref LocalPosition localPosition, ref CameraSpeed cameraSpeed)
+        private void FollowPlayer(ref Translation trans, ref Rotation rotation, [ReadOnly] ref TpsCamera tpsCamera)
         {
-            var offset = localPosition.Value;
-            var speed = cameraSpeed.Value;
-            void Follow(ref Translation translation, ref Rotation rotation)
-            {
-                var tr = cameraTransform.Value;
-                tr.position = lerp(tr.position, translation.Value + mul(rotation.Value, offset), Time.deltaTime*speed);
-                // tr.LookAt(translation.Value);
-                tr.rotation = slerp(tr.rotation, rotation.Value, Time.deltaTime*speed);
-            }
+                Debug.Log(trans.Value + "+" + rotation.Value);
 
-            Entities.With(_playerQuery)
-                    .ForEach<Translation, Rotation>(Follow);
+            using(var translations = _playerQuery.ToComponentDataArray<Translation>(Allocator.TempJob))
+            using(var rotations = _playerQuery.ToComponentDataArray<Rotation>(Allocator.TempJob))
+            {
+                if (translations.Length == 0 || rotations.Length == 0) return;
+
+                var offset = tpsCamera.Offset;
+                var speed = tpsCamera.Speed;
+                var pos = translations[0].Value;
+                var rot = rotations[0].Value;
+
+                trans.Value = lerp(trans.Value, pos + mul(rot, tpsCamera.Offset), Time.deltaTime*speed);
+                rotation.Value = slerp(rotation.Value, rot, Time.deltaTime*speed);
+
+            }
         }
     }
 }

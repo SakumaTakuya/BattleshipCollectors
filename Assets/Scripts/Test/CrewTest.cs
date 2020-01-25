@@ -34,7 +34,6 @@ namespace Sakkun.DOTS.Test
                 mesh = _playerMesh,
                 material = _material
             });
-
             _entityManager.SetComponentData(entity, new MouseControled{ Sensitivity = 1f });
             _entityManager.SetComponentData(entity, new StraightMover { Speed = 1f });
 

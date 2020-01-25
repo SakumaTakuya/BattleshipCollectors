@@ -4,8 +4,8 @@ using UnityEngine.Experimental.PlayerLoop;
 
 namespace Sakkun.DOTS
 {
-    // [UpdateInGroup(typeof(SimulationSystemGroup))]
-    [UpdateBefore(typeof(FixedUpdate))]
+    [UpdateInGroup(typeof(SimulationSystemGroup))]
+    // [UpdateBefore(typeof(FixedUpdate))]
     public class MoveSystemGroup : ComponentSystemGroup { }
 
     [UpdateInGroup(typeof(SimulationSystemGroup))]

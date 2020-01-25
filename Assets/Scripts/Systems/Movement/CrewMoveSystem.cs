@@ -9,7 +9,7 @@ using static Unity.Mathematics.math;
 
 namespace Sakkun.DOTS
 {
-#if DEBUG
+#if Deplecate
     [UpdateInGroup(typeof(MoveSystemGroup))]
     [UpdateAfter(typeof(GoStraightSystem))]
     public class CrewMoveSystem : JobComponentSystem
@@ -65,9 +65,7 @@ namespace Sakkun.DOTS
                 Translations = translations,
                 Rotations = rotations
             }.Schedule(this, inputDeps);
-        }
-
-        
+        }        
     }
 #endif
 }

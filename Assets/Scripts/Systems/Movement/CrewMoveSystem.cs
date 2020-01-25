@@ -9,6 +9,7 @@ using static Unity.Mathematics.math;
 
 namespace Sakkun.DOTS
 {
+#if DEBUG
     [UpdateInGroup(typeof(MoveSystemGroup))]
     [UpdateAfter(typeof(GoStraightSystem))]
     public class CrewMoveSystem : JobComponentSystem
@@ -17,8 +18,10 @@ namespace Sakkun.DOTS
         [RequireComponentTag(typeof(Crew))]
         private struct MoveJob : IJobForEachWithEntity<Translation, Rotation, LocalPosition, LocalRotation>
         {
-            [DeallocateOnJobCompletion, ReadOnly] public NativeArray<Translation> Translations;
-            [DeallocateOnJobCompletion, ReadOnly] public NativeArray<Rotation> Rotations;
+            [System.Obsolete, DeallocateOnJobCompletion, ReadOnly] public NativeArray<Translation> Translations;
+            [System.Obsolete, DeallocateOnJobCompletion, ReadOnly] public NativeArray<Rotation> Rotations;
+
+            // [DeallocateOnJobCompletion, ReadOnly] public NativeArray
 
             public void Execute(
                 Entity entity, 
@@ -66,4 +69,5 @@ namespace Sakkun.DOTS
 
         
     }
+#endif
 }

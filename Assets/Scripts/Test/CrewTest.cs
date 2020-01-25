@@ -46,9 +46,11 @@ namespace Sakkun.DOTS.Test
                 typeof(LocalToWorld),
                 typeof(Translation),
                 typeof(Rotation),
-                typeof(LocalPosition),
-                typeof(LocalRotation),
-                typeof(Target));
+                // typeof(LocalPosition),
+                // typeof(LocalRotation),
+                // typeof(Target),
+                typeof(Parent),
+                typeof(LocalToParent));
 
             _entityManager.SetSharedComponentData(prefab, new RenderMesh
             {
@@ -56,7 +58,12 @@ namespace Sakkun.DOTS.Test
                 material = _material
             });
 
-            _entityManager.SetComponentData(prefab, new Target
+            // _entityManager.SetComponentData(prefab, new Target
+            // {
+            //     Value = entity
+            // });
+
+            _entityManager.SetComponentData(prefab, new Parent
             {
                 Value = entity
             });
@@ -68,7 +75,7 @@ namespace Sakkun.DOTS.Test
                 _entityManager.Instantiate(prefab, entities);
                 for (int index = 0; index < Side; index++)
                 {
-                    _entityManager.SetComponentData(entities[index], new LocalPosition
+                    _entityManager.SetComponentData(entities[index], new Translation
                     {
                         Value = rand.NextFloat3(-5f, 5f)
                     });                  

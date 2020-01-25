@@ -9,5 +9,6 @@ namespace Sakkun.DOTS
         public float Sensitivity;
         public float Yaw;
         public float Pitch;
+
     }
 }
